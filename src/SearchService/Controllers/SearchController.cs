@@ -36,7 +36,7 @@ namespace SearchService.Controllers
                 // Return auctions that are ending within the next 6 hours
                 "endingSoon" => query.Match(x => x.AuctionEnd < DateTime.UtcNow.AddHours(6) && x.AuctionEnd > DateTime.UtcNow),
                 // Deafult => filter by active auctions
-                _ => query.Match(x => x.AuctionEnd < DateTime.UtcNow)
+                _ => query.Match(x => x.AuctionEnd > DateTime.UtcNow)
             };
 
             if (!string.IsNullOrEmpty(searchParams.Seller))
