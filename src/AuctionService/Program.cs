@@ -17,12 +17,20 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 // Register Masstransit services
 builder.Services.AddMassTransit(x =>
 {
+    // Configure messages outbox for resiliency
+    x.AddEntityFrameworkOutbox<AuctionDbContext>(options =>
+    {
+        // Once the servicebus is up again, try every 10 seconds, to look in the outbox for messages waiting to be send to the servicebus
+        options.QueryDelay = TimeSpan.FromSeconds(10);
+        options.UsePostgres();
+        options.UseBusOutbox();
+    });
+
     x.UsingRabbitMq((context, cfg) =>
     {
         cfg.ConfigureEndpoints(context);
     });
 });
-
 
 var app = builder.Build();
 
