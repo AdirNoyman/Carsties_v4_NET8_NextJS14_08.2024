@@ -24,6 +24,14 @@ builder.Services.AddMassTransit(x =>
 
     x.UsingRabbitMq((context, cfg) =>
     {
+        cfg.ReceiveEndpoint("search-auction-created", e => 
+        {
+            // When new auction was created and in case the consumer database (mongoDb) is down, try 5 times, in a 5 seconds intervals between
+            e.UseMessageRetry(r => r.Interval(5,5));
+            e.ConfigureConsumer<AuctionCreatedConsumer>(context);
+
+        }
+         );
         cfg.ConfigureEndpoints(context);
     });
 });
