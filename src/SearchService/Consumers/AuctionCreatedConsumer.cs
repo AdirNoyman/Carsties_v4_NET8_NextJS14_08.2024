@@ -17,10 +17,14 @@ namespace SearchService.Consumers
 
         public async Task Consume(ConsumeContext<AuctionCreated> context)
         {
-            var auction = context.Message;
-            Console.WriteLine($"Consuming auction created: {context.Message.Id}");
+            // var auction = context.Message;
 
+            Console.WriteLine($"Consuming auction created: {context.Message.Id} 😎🤘");
+            
+            // item = auction
             var item = _mapper.Map<Item>(context.Message);
+
+            if (item.Model == "Foo") throw new ArgumentException($"sell cars with the name of {item.Model}");
 
             await item.SaveAsync();
         }
